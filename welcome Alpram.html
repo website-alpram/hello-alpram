@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome Alpram</title>
+    <link rel="stylesheet" href="css/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="background">
+      <img src="css/o.jpg" alt="" />
+    </div>
+    <div class="rotate">
+      <button class="music-button" onclick="togglePlay()">
+        <i class="fas fa-music"></i>
+      </button>
+    </div>
+    <figcaption>EMINEM - Lose Yourself</figcaption>
+
+    <audio id="myAudio" src="css/Eminem - Lose Yourself.mp3"></audio>
+
+    <div class="content">
+      <h1>Selamat Datang Kakang Pram</h1>
+
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Mau cari Apaa Ganteng..."
+          class="search-box"
+          id="searchBox"
+        />
+        <i
+          class="fas fa-search"
+          onclick="search(document.getElementById('searchBox').value.trim())"
+        ></i>
+        <div class="history-container" id="historyContainer"></div>
+        <div class="web-history-container" id="webHistoryContainer"></div>
+      </div>
+    </div>
+
+    <script>
+      const audio = document.getElementById("myAudio");
+
+      function togglePlay() {
+        if (audio.paused) {
+          audio.play();
+        } else {
+          audio.pause();
+        }
+      }
+
+      window.addEventListener("beforeunload", function () {
+        audio.pause();
+      });
+
+      const recommendations = [
+        "Aplikasi Android",
+        "Anime terbaik",
+        "Asuransi kesehatan",
+        "Berita terkini",
+        "Belanja online",
+        "Bitcoin",
+        "Cara membuat blog",
+        "ChatGPT",
+        "Cuaca hari ini",
+        "Download lagu",
+        "Drama Korea terbaru",
+        "Diet sehat",
+        "Ebook gratis",
+        "Edit foto online",
+        "Email sign up",
+        "Facebook login",
+        "Film terbaru 2024",
+        "Forex trading",
+        "Google Maps",
+        "Game online",
+        "Gmail",
+        "GTA San Andreas",
+        "Hotel murah",
+        "Harga emas",
+        "Horoscope hari ini",
+        "Instagram",
+        "Info lowongan kerja",
+        "Investasi saham",
+        "Jadwal sholat",
+        "Jual beli online",
+        "Jasa pengiriman",
+        "Kurs dollar",
+        "Kesehatan mental",
+        "Komik online",
+        "Laptop terbaik",
+        "Lirik lagu",
+        "Lomba 17 Agustus",
+        "Makanan sehat",
+        "Musik gratis",
+        "Make up tutorial",
+        "Netflix",
+        "News terbaru",
+        "Nama bayi",
+        "Olahraga",
+        "Online shopping",
+        "Obat alami",
+        "Pendidikan",
+        "Pengiriman barang",
+        "Pelatihan online",
+        "Quotes inspiratif",
+        "Quick tips",
+        "Qurban online",
+        "Resep masakan",
+        "Rumah dijual",
+        "Running shoes",
+        "Smartphone terbaru",
+        "Situs download film",
+        "Streaming film",
+        "Teknologi terbaru",
+        "TikTok",
+        "Tempat wisata",
+        "Universitas terbaik",
+        "Update Windows",
+        "Ulang tahun",
+        "Video viral",
+        "VPN gratis",
+        "Vaksin",
+        "Xiaomi terbaru",
+        "Xbox games",
+        "X-ray medical",
+        "YouTube",
+        "Yakiniku recipe",
+        "Yoga for beginners",
+        "Zona waktu",
+        "Zakat online",
+        "Zumba dance",
+        "Zupa Zupa",
+      ];
+
+      function search(query) {
+        if (query) {
+          const searchURL = `https://www.google.com/search?q=${encodeURIComponent(
+            query
+          )}`;
+          window.open(searchURL, "_blank");
+          addHistoryItem(query);
+        }
+      }
+
+      function addHistoryItem(query) {
+        const historyContainer = document.getElementById("historyContainer");
+        const historyItem = document.createElement("div");
+        historyItem.className = "history-item";
+        historyItem.textContent = query;
+        historyItem.onclick = function () {
+          document.getElementById("searchBox").value = query;
+          search(query);
+          document.getElementById("historyContainer").style.display = "none";
+        };
+        historyContainer.appendChild(historyItem);
+        historyContainer.style.display = "block";
+      }
+
+      function updateRecommendations(query) {
+        const filteredRecommendations = recommendations.filter(function (item) {
+          return item.toLowerCase().includes(query.toLowerCase());
+        });
+
+        const webHistoryContainer = document.getElementById(
+          "webHistoryContainer"
+        );
+        webHistoryContainer.innerHTML = "";
+        if (filteredRecommendations.length > 0) {
+          filteredRecommendations.forEach(function (item) {
+            const historyItem = document.createElement("div");
+            historyItem.className = "web-history-item";
+            historyItem.textContent = item;
+            historyItem.onclick = function () {
+              document.getElementById("searchBox").value = item;
+              search(item);
+              document.getElementById("web-History-Container").style.display =
+                "none";
+            };
+            webHistoryContainer.appendChild(historyItem);
+          });
+
+          webHistoryContainer.style.display = "block";
+        } else {
+          webHistoryContainer.style.display = "none";
+        }
+      }
+
+      document
+        .getElementById("searchBox")
+        .addEventListener("input", function () {
+          const query = this.value.trim();
+          updateRecommendations(query);
+          if (query === "") {
+            document.getElementById("historyContainer").style.display = "none";
+          } else {
+            document.getElementById("historyContainer").style.display = "block";
+          }
+        });
+
+      document
+        .getElementById("searchBox")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            const query = this.value.trim();
+            if (query) {
+              search(query);
+            }
+          }
+        });
+    </script>
+  </body>
+</html>
